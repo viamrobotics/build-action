@@ -4,8 +4,8 @@ const https = require('https');
 const stream = require('node:stream/promises');
 const util = require('node:util');
 const execFileAsync = util.promisify(require('node:child_process').execFile);
-const core = require('@actions/core');
-const github = require('@actions/github');
+const { getInput } = require('@actions/core');
+const { context } = require('@actions/github');
 
 const platforms = ['linux', 'darwin'];
 const machines = {
@@ -56,13 +56,13 @@ function archSlug() {
     }
     console.log((await execFileAsync(cliPath, ['version'])).stdout.trim());
     const inputs = {
-        keyId: core.getInput('key-id'),
-        keyValue: core.getInput('key-value'),
-        version: core.getInput('version'),
+        keyId: getInput('key-id'),
+        keyValue: getInput('key-value'),
+        version: getInput('version'),
     };
     console.log('I will run with', {
-        repo: `https://github.com/${github.context.repo.owner}/${github.context.repo.repo}`,
-        ref: github.context.ref,
+        repo: `https://github.com/${context.repo.owner}/${context.repo.repo}`,
+        ref: context.ref,
         version: inputs.version,
     });
     console.warn("TODO: start build");
