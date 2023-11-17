@@ -4,6 +4,8 @@ const https = require('https');
 const stream = require('node:stream/promises');
 const util = require('node:util');
 const execFileAsync = util.promisify(require('node:child_process').execFile);
+const core = require('@actions/core');
+const github = require('@actions/github');
 
 const platforms = ['linux', 'darwin'];
 const machines = {
@@ -22,7 +24,7 @@ const argsConfig = {
 /** download a file and optionally set mode bits */
 async function download(url, dest, mode = fs.constants.S_IRWXU) {
     const output = fs.createWriteStream(dest);
-    const incoming = await new Promise(function(resolve, _reject) {
+    const incoming = await new Promise(function (resolve, _reject) {
         https.get(url, (incoming) => resolve(incoming));
     })
     await stream.pipeline(incoming, output);
@@ -44,7 +46,7 @@ function archSlug() {
 }
 
 /** async main */
-(async function() {
+(async function () {
     const args = util.parseArgs(argsConfig);
     const slug = archSlug();
     console.log('inferred architecture', slug);
@@ -53,6 +55,16 @@ function archSlug() {
         console.log('downloaded CLI');
     }
     console.log((await execFileAsync(cliPath, ['version'])).stdout.trim());
+    const inputs = {
+        keyId: core.getInput('key-id'),
+        keyValue: core.getInput('key-value'),
+        version: core.getInput('version'),
+    };
+    console.log('I will run with', {
+        repo: `https://github.com/${github.context.repo.owner}/${github.context.repo.repo}`,
+        ref: github.context.ref,
+        version: inputs.version,
+    });
     console.warn("TODO: start build");
     console.warn("TODO: wait for build");
     console.warn("TODO: show logs / status");

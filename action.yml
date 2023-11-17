@@ -1,0 +1,22 @@
+name: Viam cloud build
+description: Build and publish your Viam module on multiple platforms.
+
+inputs:
+  meta-path:
+    description: location of module metadata. set to empty string to not use
+    default: meta.json
+  key-id:
+    description: ID of your auth key
+    required: true
+  key-value:
+    description: secret value of your auth key
+    required: true
+  version:
+    description: version to set for the module. if missing, your module will build but not upload
+
+runs:
+  using: node20
+  main: 'src/index.js'
+
+branding:
+  icon: upload-cloud
