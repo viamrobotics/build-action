@@ -1,2 +1,3 @@
 dist/index.js: src/index.js
-	node_modules/.bin/parcel build
+	npm install -g @vercel/ncc
+	ncc build $^
