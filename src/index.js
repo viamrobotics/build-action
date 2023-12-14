@@ -1,11 +1,10 @@
-const fs = require('fs');
-const os = require('os');
-const https = require('https');
+const fs = require('node:fs');
+const os = require('node:os');
+const https = require('node:https');
 const stream = require('node:stream/promises');
 const util = require('node:util');
-const execFileAsync = util.promisify(require('node:child_process').execFile);
+const { spawnSync, SpawnSyncReturns } = require('node:child_process');
 const { getInput } = require('@actions/core');
-const { context } = require('@actions/github');
 
 const platforms = ['linux', 'darwin'];
 const machines = {
@@ -18,8 +17,11 @@ const cliPath = './viam-cli';
 const argsConfig = {
     options: {
         "skip-download": { type: 'boolean' },
+        "skip-login": { type: 'boolean' },
+        "cli-channel": { type: 'string', default: 'stable' },
     },
 };
+const uuidRegex = /^[\dabcdef\-]+$/;
 
 /** download a file and optionally set mode bits */
 async function download(url, dest, mode = fs.constants.S_IRWXU) {
@@ -45,27 +47,66 @@ function archSlug() {
     return `${platform}-${machines[machine]}`;
 }
 
+/**
+ * take spawnSync's output, print it, crash on error
+ * @param {SpawnSyncReturns} result 
+*/
+function checkSpawnSync(result) {
+    if (result.error) {
+        throw result.error;
+    }
+    if (result.status == null) {
+        throw Error("hasn't exited");
+    }
+    process.stderr.write(result.stderr);
+    process.stdout.write(result.stdout);
+    if (result.status != 0) {
+        throw Error(`nonzero exit ${result.status}`);
+    }
+}
+
+/**
+ * get build-id from start command
+ * @param {Buffer} stdout stdout of 'start' command
+ * @returns {String} build ID
+ */
+function parseBuildId(stdout) {
+    // todo: consume this as json or other machine-readable format
+    const buildId = stdout.toString().split('\n')[0];
+    console.log('using build ID', buildId);
+    if (uuidRegex.exec(buildId) == null) {
+        console.warn("build ID doesn't appear to be a UUID, parse may have failed");
+    }
+    return buildId;
+}
+
 /** async main */
 (async function () {
     const args = util.parseArgs(argsConfig);
     const slug = archSlug();
     console.log('inferred architecture', slug);
     if (!args.values['skip-download']) {
-        await download(`https://storage.googleapis.com/packages.viam.com/apps/viam-cli/viam-cli-stable-${slug}`, cliPath);
+        await download(`https://storage.googleapis.com/packages.viam.com/apps/viam-cli/viam-cli-${args.values['cli-channel']}-${slug}`, cliPath);
         console.log('downloaded CLI');
     }
-    console.log((await execFileAsync(cliPath, ['version'])).stdout.trim());
+    checkSpawnSync(spawnSync(cliPath, ['version']));
     const inputs = {
         keyId: getInput('key-id'),
         keyValue: getInput('key-value'),
         version: getInput('version'),
+        ref: getInput('ref'),
     };
+    if (!args.values['skip-login']) {
+        throw Error("TODO LOGIN");
+    }
     console.log('I will run with', {
-        repo: `https://github.com/${context.repo.owner}/${context.repo.repo}`,
-        ref: context.ref,
-        version: inputs.version,
+        ref: inputs.ref || '',
+        version: inputs.version || '',
     });
-    console.warn("TODO: start build");
-    console.warn("TODO: wait for build");
-    console.warn("TODO: show logs / status");
+    const startArgs = ['module', 'build', 'start', '--version', inputs.version || ''];
+    const spawnRet = spawnSync(cliPath, startArgs);
+    checkSpawnSync(spawnRet);
+    const buildId = parseBuildId(spawnRet.stdout);
+    console.log('waiting for build');
+    checkSpawnSync(spawnSync(cliPath, ['module', 'build', 'logs', '--id', buildId, '--wait']));
 })();
