@@ -1,3 +1,6 @@
+> [!WARNING]
+> This is pre-release and you should not use it yet. You probably want the old [upload-module action](https://github.com/viamrobotics/upload-module)
+
 # build-action
 
 This is a Github CI action which wraps Viam's cloud build system. Use this to build and publish your Viam module for multiple platforms.
