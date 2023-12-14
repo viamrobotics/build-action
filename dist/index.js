@@ -26271,7 +26271,7 @@ function parseBuildId(stdout) {
         ref: getInput('ref'),
     };
     if (!args.values['skip-login']) {
-        throw Error("TODO LOGIN");
+        checkSpawnSync(spawnSync(cliPath, ['login', 'api-key', '--key-id', inputs.keyId, '--key', inputs.keyValue]));
     }
     console.log('I will run with', {
         ref: inputs.ref || '',
