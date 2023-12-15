@@ -26192,7 +26192,7 @@ const argsConfig = {
     options: {
         "skip-download": { type: 'boolean' },
         "skip-login": { type: 'boolean' },
-        "cli-channel": { type: 'string', default: 'stable' },
+        "cli-channel": { type: 'string', default: 'latest' },
     },
 };
 const uuidRegex = /^[\dabcdef\-]+$/;
@@ -26273,11 +26273,12 @@ function parseBuildId(stdout) {
     if (!args.values['skip-login']) {
         checkSpawnSync(spawnSync(cliPath, ['login', 'api-key', '--key-id', inputs.keyId, '--key', inputs.keyValue]));
     }
-    console.log('I will run with', {
+    const config = {
         ref: inputs.ref || '',
         version: inputs.version || '',
-    });
-    const startArgs = ['module', 'build', 'start', '--version', inputs.version || ''];
+    }
+    console.log('I will run with', config);
+    const startArgs = ['module', 'build', 'start', '--version', config.version]; // , '--ref', config.ref];
     const spawnRet = spawnSync(cliPath, startArgs);
     checkSpawnSync(spawnRet);
     const buildId = parseBuildId(spawnRet.stdout);

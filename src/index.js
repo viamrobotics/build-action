@@ -18,7 +18,7 @@ const argsConfig = {
     options: {
         "skip-download": { type: 'boolean' },
         "skip-login": { type: 'boolean' },
-        "cli-channel": { type: 'string', default: 'stable' },
+        "cli-channel": { type: 'string', default: 'latest' },
     },
 };
 const uuidRegex = /^[\dabcdef\-]+$/;
@@ -104,7 +104,7 @@ function parseBuildId(stdout) {
         version: inputs.version || '',
     }
     console.log('I will run with', config);
-    const startArgs = ['module', 'build', 'start', '--version', config.version, '--ref', config.ref];
+    const startArgs = ['module', 'build', 'start', '--version', config.version]; // , '--ref', config.ref];
     const spawnRet = spawnSync(cliPath, startArgs);
     checkSpawnSync(spawnRet);
     const buildId = parseBuildId(spawnRet.stdout);
