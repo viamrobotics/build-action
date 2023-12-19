@@ -41,3 +41,7 @@ jobs:
 ## Build commands
 
 ## Auth instructions
+
+## Examples
+
+- ...

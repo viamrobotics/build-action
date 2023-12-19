@@ -12,7 +12,9 @@ inputs:
     description: secret value of your auth key
     required: true
   version:
-    description: version to set for the module. if missing, your module will build but not upload
+    description: Version to set for the module. If missing, your module will build but not upload.
+  ref:
+    description: The git ref to build. This will usually be a sha, but can be a branch or anything supported by git checkout.
 
 runs:
   using: node20

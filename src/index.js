@@ -84,27 +84,23 @@ function parseBuildId(stdout) {
 (async function () {
     const args = util.parseArgs(argsConfig);
     const slug = archSlug();
-    console.log('inferred architecture', slug);
     if (!args.values['skip-download']) {
         await download(`https://storage.googleapis.com/packages.viam.com/apps/viam-cli/viam-cli-${args.values['cli-channel']}-${slug}`, cliPath);
-        console.log('downloaded CLI');
+        console.log('downloaded CLI for', args.values['cli-channel'], slug);
     }
     checkSpawnSync(spawnSync(cliPath, ['version']));
-    const inputs = {
-        keyId: getInput('key-id'),
-        keyValue: getInput('key-value'),
-        version: getInput('version'),
-        ref: getInput('ref'),
-    };
     if (!args.values['skip-login']) {
-        checkSpawnSync(spawnSync(cliPath, ['login', 'api-key', '--key-id', inputs.keyId, '--key', inputs.keyValue]));
+        checkSpawnSync(spawnSync(cliPath, ['login', 'api-key', '--key-id', getInput('key-id'), '--key', getInput('key-value')]));
     }
     const config = {
-        ref: inputs.ref || '',
-        version: inputs.version || '',
+        ref: getInput('ref') || '',
+        version: getInput('version') || '',
     }
     console.log('I will run with', config);
-    const startArgs = ['module', 'build', 'start', '--version', config.version]; // , '--ref', config.ref];
+    const startArgs = ['module', 'build', 'start', '--version', config.version];
+    if (config.ref) {
+        startArgs.push('--ref', config.ref);
+    }
     const spawnRet = spawnSync(cliPath, startArgs);
     checkSpawnSync(spawnRet);
     const buildId = parseBuildId(spawnRet.stdout);
