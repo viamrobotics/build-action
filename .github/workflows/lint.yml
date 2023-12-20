@@ -2,14 +2,14 @@ on:
   push:
   
 jobs:
-  publish:
+  lint:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
     - name: install
       run: npm install
     - name: lint
-      run: eslint src
+      run: node_modules/.bin/eslint src
     - name: check ncc
       run: |
         make dist/index.js
