@@ -38,9 +38,9 @@ jobs:
         key-value: ${{ secrets.viam_key_value }}
 ```
 
-## Build commands
-
 ## Auth instructions
+
+## Environment and base image
 
 ## Examples
 

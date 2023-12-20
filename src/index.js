@@ -3,7 +3,7 @@ const os = require('node:os');
 const https = require('node:https');
 const stream = require('node:stream/promises');
 const util = require('node:util');
-const { spawnSync, SpawnSyncReturns } = require('node:child_process');
+const { spawnSync, SpawnSyncReturns } = require('node:child_process'); // eslint-disable-line no-unused-vars
 const { getInput } = require('@actions/core');
 
 const platforms = ['linux', 'darwin'];
@@ -21,12 +21,12 @@ const argsConfig = {
         "cli-channel": { type: 'string', default: 'latest' },
     },
 };
-const uuidRegex = /^[\dabcdef\-]+$/;
+const uuidRegex = /^[\dabcdef-]+$/;
 
 /** download a file and optionally set mode bits */
 async function download(url, dest, mode = fs.constants.S_IRWXU) {
     const output = fs.createWriteStream(dest);
-    const incoming = await new Promise(function (resolve, _reject) {
+    const incoming = await new Promise(function (resolve) {
         https.get(url, (incoming) => resolve(incoming));
     })
     await stream.pipeline(incoming, output);
