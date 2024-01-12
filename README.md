@@ -15,7 +15,7 @@ Your customers are deploying to different kinds of hardware, and prototyping on 
 1. Create a .github/workflows/viam-build.yml in your repo with these default contents:
 
     ```yml
-    # see https://github.com/viamrobotics/upload-module for help
+    # see https://github.com/viamrobotics/build-action for help
     on:
       push:
         tags:
