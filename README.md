@@ -38,6 +38,7 @@ jobs:
       with:
         # note: you can replace this line with 'version: ""' if you want to test the build process without deploying
         version: ${{ github.ref_name }}
+        ref: ${{ github.sha }}
         key-id: ${{ secrets.viam_key_id }}
         key-value: ${{ secrets.viam_key_value }}
 ```
