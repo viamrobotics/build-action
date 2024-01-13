@@ -26177,7 +26177,7 @@ const os = __nccwpck_require__(612);
 const https = __nccwpck_require__(2286);
 const stream = __nccwpck_require__(6402);
 const util = __nccwpck_require__(7261);
-const { spawnSync, SpawnSyncReturns } = __nccwpck_require__(7718); // eslint-disable-line no-unused-vars
+const { spawnSync, SpawnSyncReturns, spawn, ChildProcessWithoutNullStreams } = __nccwpck_require__(7718); // eslint-disable-line no-unused-vars
 const { getInput } = __nccwpck_require__(2186);
 
 const platforms = ['linux', 'darwin'];
@@ -26240,6 +26240,27 @@ function checkSpawnSync(result) {
 }
 
 /**
+ * forward output from child process, crash on error
+ * @param {ChildProcessWithoutNullStreams} child
+ */
+async function checkSpawn(child) {
+    child.stdout.pipe(process.stdout);
+    child.stderr.pipe(process.stderr);
+    await new Promise(function (resolve, reject) {
+        child.on('close', function (code, signal) {
+            if (signal != null) {
+                reject(new Error(`terminated with signal ${signal}`));
+            }
+            if (code == 0) {
+                resolve();
+            } else {
+                reject(new Error(`exited with code ${code}`));
+            }
+        });
+    });
+}
+
+/**
  * get build-id from start command
  * @param {Buffer} stdout stdout of 'start' command
  * @returns {String} build ID
@@ -26279,7 +26300,7 @@ function parseBuildId(stdout) {
     checkSpawnSync(spawnRet);
     const buildId = parseBuildId(spawnRet.stdout);
     console.log('waiting for build');
-    checkSpawnSync(spawnSync(cliPath, ['module', 'build', 'logs', '--id', buildId, '--wait']));
+    await checkSpawn(spawn(cliPath, ['module', 'build', 'logs', '--id', buildId, '--wait']));
 })();
 
 })();

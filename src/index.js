@@ -3,7 +3,7 @@ const os = require('node:os');
 const https = require('node:https');
 const stream = require('node:stream/promises');
 const util = require('node:util');
-const { spawnSync, SpawnSyncReturns } = require('node:child_process'); // eslint-disable-line no-unused-vars
+const { spawnSync, SpawnSyncReturns, spawn, ChildProcessWithoutNullStreams } = require('node:child_process'); // eslint-disable-line no-unused-vars
 const { getInput } = require('@actions/core');
 
 const platforms = ['linux', 'darwin'];
@@ -66,6 +66,27 @@ function checkSpawnSync(result) {
 }
 
 /**
+ * forward output from child process, crash on error
+ * @param {ChildProcessWithoutNullStreams} child
+ */
+async function checkSpawn(child) {
+    child.stdout.pipe(process.stdout);
+    child.stderr.pipe(process.stderr);
+    await new Promise(function (resolve, reject) {
+        child.on('close', function (code, signal) {
+            if (signal != null) {
+                reject(new Error(`terminated with signal ${signal}`));
+            }
+            if (code == 0) {
+                resolve();
+            } else {
+                reject(new Error(`exited with code ${code}`));
+            }
+        });
+    });
+}
+
+/**
  * get build-id from start command
  * @param {Buffer} stdout stdout of 'start' command
  * @returns {String} build ID
@@ -105,5 +126,5 @@ function parseBuildId(stdout) {
     checkSpawnSync(spawnRet);
     const buildId = parseBuildId(spawnRet.stdout);
     console.log('waiting for build');
-    checkSpawnSync(spawnSync(cliPath, ['module', 'build', 'logs', '--id', buildId, '--wait']));
+    await checkSpawn(spawn(cliPath, ['module', 'build', 'logs', '--id', buildId, '--wait']));
 })();
