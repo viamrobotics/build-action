@@ -26300,7 +26300,7 @@ function parseBuildId(stdout) {
     checkSpawnSync(spawnRet);
     const buildId = parseBuildId(spawnRet.stdout);
     console.log('waiting for build');
-    await checkSpawn(spawn(cliPath, ['module', 'build', 'logs', '--id', buildId, '--wait']));
+    await checkSpawn(spawn(cliPath, ['module', 'build', 'logs', '--id', buildId, '--wait', '--group-logs']));
 })();
 
 })();
