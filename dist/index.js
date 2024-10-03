@@ -26968,9 +26968,9 @@ function parseBuildId(stdout) {
     if (config.ref) {
         startArgs.push('--ref', config.ref);
     }
-    if (process.env.GITHUB_TOKEN) {
-        console.log('using GITHUB_TOKEN from environment as checkout token');
-        startArgs.push('--token', process.env.GITHUB_TOKEN);
+    if (process.env.ACTIONS_RUNTIME_TOKEN) {
+        console.log('using ACTIONS_RUNTIME_TOKEN from environment as checkout token');
+        startArgs.push('--token', process.env.ACTIONS_RUNTIME_TOKEN);
     }
     const spawnRet = spawnSync(cliPath, startArgs);
     checkSpawnSync(spawnRet);
