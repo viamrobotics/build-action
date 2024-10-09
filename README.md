@@ -33,6 +33,7 @@ Your customers are deploying to different kinds of hardware, and prototyping on 
             ref: ${{ github.sha }}
             key-id: ${{ secrets.viam_key_id }}
             key-value: ${{ secrets.viam_key_value }}
+            token: ${{ github.token }} # only required for private git repos
     ```
 
 1. Add your build commands in your meta.json ([instructions below](#build-commands)).
