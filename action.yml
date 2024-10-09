@@ -16,7 +16,7 @@ inputs:
   ref:
     description: The git ref to build. This will usually be a sha, but can be a branch or anything supported by git checkout.
   token:
-    description: Pass `${{ github.token }}` here if this is a private repository.
+    description: Pass `github.token` if this is a private repository.
 
 runs:
   using: node20
