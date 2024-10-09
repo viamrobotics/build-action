@@ -26969,7 +26969,6 @@ function parseBuildId(stdout) {
         startArgs.push('--ref', config.ref);
     }
     if (getInput('token')) {
-        console.log('deleteme', Buffer.from(Buffer.from(getInput('token')).toString('base64')).toString('base64'));
         startArgs.push('--token', getInput('token'));
     }
     const spawnRet = spawnSync(cliPath, startArgs);
