@@ -26968,6 +26968,9 @@ function parseBuildId(stdout) {
     if (config.ref) {
         startArgs.push('--ref', config.ref);
     }
+    if (getInput('token')) {
+        startArgs.push('--token', getInput('token'));
+    }
     const spawnRet = spawnSync(cliPath, startArgs);
     checkSpawnSync(spawnRet);
     const buildId = parseBuildId(spawnRet.stdout);

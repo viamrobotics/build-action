@@ -12,5 +12,5 @@ jobs:
       run: node_modules/.bin/eslint src
     - name: confirm js artifact matches source
       run: |
-        make dist/index.js
+        make -B dist/index.js
         git diff --exit-code
