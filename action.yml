@@ -17,6 +17,8 @@ inputs:
     description: The git ref to build. This will usually be a sha, but can be a branch or anything supported by git checkout.
   token:
     description: Pass `github.token` if this is a private repository.
+  workdir:
+    description: Use this if your module is not in the repo root. If you pass this, the `meta-path` will be relative to this workdir, not to repo root.
 
 runs:
   using: node20
