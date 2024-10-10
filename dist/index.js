@@ -26971,6 +26971,9 @@ function parseBuildId(stdout) {
     if (getInput('token')) {
         startArgs.push('--token', getInput('token'));
     }
+    if (getInput('workdir')) {
+        startArgs.push('--workdir', getInput('workdir'));
+    }
     const spawnRet = spawnSync(cliPath, startArgs);
     checkSpawnSync(spawnRet);
     const buildId = parseBuildId(spawnRet.stdout);
