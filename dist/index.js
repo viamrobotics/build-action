@@ -26864,7 +26864,7 @@ const argsConfig = {
     options: {
         "skip-download": { type: 'boolean' },
         "skip-login": { type: 'boolean' },
-        "cli-channel": { type: 'string', default: 'latest' },
+        "cli-channel": { type: 'string', default: 'stable' },
     },
 };
 const uuidRegex = /^[\dabcdef-]+$/;
