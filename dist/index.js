@@ -26864,6 +26864,7 @@ const argsConfig = {
     options: {
         "skip-download": { type: 'boolean' },
         "skip-login": { type: 'boolean' },
+        "skip-update": { type: 'boolean' },
         "cli-channel": { type: 'string', default: 'stable' },
     },
 };
@@ -26958,6 +26959,11 @@ function parseBuildId(stdout) {
     checkSpawnSync(spawnSync(cliPath, ['version']));
     if (!args.values['skip-login']) {
         checkSpawnSync(spawnSync(cliPath, ['login', 'api-key', '--key-id', getInput('key-id'), '--key', getInput('key-value')]));
+    }
+    if (!args.values['skip-update']) {
+        console.log('running `viam module update`');
+        checkSpawnSync(spawnSync(cliPath, ['module', 'update']));
+        console.log('`viam module update` completed');
     }
     const config = {
         ref: getInput('ref') || '',
