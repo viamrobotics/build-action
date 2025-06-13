@@ -19,6 +19,9 @@ inputs:
     description: Pass `github.token` if this is a private repository.
   workdir:
     description: Use this if your module is not in the repo root. If you pass this, the `meta-path` will be relative to this workdir, not to repo root.
+  skip-update:
+    description: The action will automatically run `viam module update` to update cloud metadata for your module using the latest `meta.json file. If you pass this, the action will not run `viam module update`.
+    default: false
 
 runs:
   using: node20
