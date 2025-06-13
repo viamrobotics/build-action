@@ -19,9 +19,12 @@ inputs:
     description: Pass `github.token` if this is a private repository.
   workdir:
     description: Use this if your module is not in the repo root. If you pass this, the `meta-path` will be relative to this workdir, not to repo root.
+  skip-login:
+    description: The action will automatically run `viam login` to login to your Viam account. If you pass this, the action will not run `viam login`.
   skip-update:
     description: The action will automatically run `viam module update` to update cloud metadata for your module using the latest `meta.json file. If you pass this, the action will not run `viam module update`.
-    default: false
+  skip-download:
+    description: The action will automatically download the Viam CLI. If you pass this, the action will not download the Viam CLI.
 
 runs:
   using: node20
