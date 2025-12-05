@@ -17,9 +17,8 @@ Your customers are deploying to different kinds of hardware, and prototyping on 
     ```yml
     # see https://github.com/viamrobotics/build-action for help
     on:
-      push:
-        tags:
-        - '[0-9]+.[0-9]+.[0-9]+'
+      release:
+       types: [published]
     
     jobs:
       publish:
