@@ -19,9 +19,6 @@ Your customers are deploying to different kinds of hardware, and prototyping on 
     on:
       release:
        types: [published]
-      push:
-        tags:
-        - '[0-9]+.[0-9]+.[0-9]+'
     
     jobs:
       publish:
