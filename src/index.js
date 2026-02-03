@@ -134,6 +134,9 @@ function parseBuildId(stdout) {
     if (getInput('workdir')) {
         startArgs.push('--workdir', getInput('workdir'));
     }
+    if (getInput('meta-path')) {
+        startArgs.push('--module', getInput('meta-path'));
+    }
     const spawnRet = spawnSync(cliPath, startArgs);
     checkSpawnSync(spawnRet);
     const buildId = parseBuildId(spawnRet.stdout);
