@@ -26952,6 +26952,7 @@ function parseBuildId(stdout) {
 (async function () {
     const args = util.parseArgs(argsConfig);
     const slug = archSlug();
+    let metaJsonPath = getInput('meta-path');
     if (!args.values['skip-download']) {
         await download(`https://storage.googleapis.com/packages.viam.com/apps/viam-cli/viam-cli-${args.values['cli-channel']}-${slug}`, cliPath);
         console.log('downloaded CLI for', args.values['cli-channel'], slug);
@@ -26961,8 +26962,8 @@ function parseBuildId(stdout) {
         checkSpawnSync(spawnSync(cliPath, ['login', 'api-key', '--key-id', getInput('key-id'), '--key', getInput('key-value')]));
     }
     if (!args.values['skip-update']) {
-        console.log('running `viam module update`');
-        checkSpawnSync(spawnSync(cliPath, ['module', 'update']));
+        console.log('running `viam module update --module', metaJsonPath, '`');
+        checkSpawnSync(spawnSync(cliPath, ['module', 'update', '--module', metaJsonPath]));
         console.log('`viam module update` completed');
     }
     const config = {
@@ -26980,6 +26981,7 @@ function parseBuildId(stdout) {
     if (getInput('workdir')) {
         startArgs.push('--workdir', getInput('workdir'));
     }
+    startArgs.push('--module', metaJsonPath);
     const spawnRet = spawnSync(cliPath, startArgs);
     checkSpawnSync(spawnRet);
     const buildId = parseBuildId(spawnRet.stdout);
