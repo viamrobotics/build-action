@@ -1,3 +1,7 @@
 viam-cli
 node_modules/
 .vscode/
+
+# Claude Code
+.claude/worktrees
+.claude/settings.local.json
