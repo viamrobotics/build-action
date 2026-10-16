@@ -102,20 +102,26 @@ function parseBuildId(stdout) {
     return buildId;
 }
 
+/** true when `name` is passed as a CLI flag, or as an action input other than '' or 'false' */
+function skipRequested(args, name) {
+    const input = getInput(name).trim().toLowerCase();
+    return Boolean(args.values[name]) || (input !== '' && input !== 'false');
+}
+
 /** async main */
 (async function () {
     const args = util.parseArgs(argsConfig);
     const slug = archSlug();
     let metaJsonPath = getInput('meta-path');
-    if (!args.values['skip-download']) {
+    if (!skipRequested(args, 'skip-download')) {
         await download(`https://storage.googleapis.com/packages.viam.com/apps/viam-cli/viam-cli-${args.values['cli-channel']}-${slug}`, cliPath);
         console.log('downloaded CLI for', args.values['cli-channel'], slug);
     }
     checkSpawnSync(spawnSync(cliPath, ['version']));
-    if (!args.values['skip-login']) {
+    if (!skipRequested(args, 'skip-login')) {
         checkSpawnSync(spawnSync(cliPath, ['login', 'api-key', '--key-id', getInput('key-id'), '--key', getInput('key-value')]));
     }
-    if (!args.values['skip-update']) {
+    if (!skipRequested(args, 'skip-update')) {
         console.log('running `viam module update --module', metaJsonPath, '`');
         checkSpawnSync(spawnSync(cliPath, ['module', 'update', '--module', metaJsonPath]));
         console.log('`viam module update` completed');
